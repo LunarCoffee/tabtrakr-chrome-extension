@@ -21,6 +21,7 @@ function getActiveTab(tabs) {
 class TabInfoFrame {
     constructor(timeStart) {
         this.timeStart = timeStart;
+        this.category = "unset";
     }
 
     async initTabs() {
@@ -35,6 +36,10 @@ class Timeline {
         await frame.initTabs();
         frame.timeEnd = frame.timeStart;
         this.frames = [frame];
+    }
+
+    updateCategory(cat) {
+        this.frames[this.frames.length - 1].category = cat;
     }
 
     async addFrame() {
@@ -84,18 +89,27 @@ function storeTimeline() {
 }
 
 let timeline = new Timeline();
-
-chrome.runtime.onInstalled.addListener(async () => {
-    loadTimeline();
-});
+let loaded = false;
+loadTimeline();
+loaded = true;
 
 chrome.tabs.onActivated.addListener(async _ => {
     await timeline.addFrame();
     storeTimeline();
     console.log("timeline saved");
+    console.log(timeline);
 });
 
-chrome.runtime.onMessage.addListener((req, sender) => {
-    console.warn("current category updated")
-    console.warn(req.cat)
+chrome.runtime.onMessage.addListener((req, sender, respond) => {
+    if (req.log != undefined) {
+        console.log(req.log);
+    } else if (req.getCategory != undefined) {
+        while (!loaded) {
+            setTimeout(() => { }, 10);
+        }
+        respond(timeline.frames[timeline.frames.length - 1].category);
+    } else {
+        timeline.updateCategory(req.cat);
+        storeTimeline();
+    }
 });
