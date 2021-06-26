@@ -1,0 +1,42 @@
+html {
+    font-family: "FreeSans", sans-serif;
+}
+
+#content {
+    width: 210px;
+}
+
+h2 {
+    margin: 9px 0 10px 0;
+    line-height: 1em;
+    font-size: 1.3em;
+}
+
+.text {
+    margin: -4px 0 4px 0;
+}
+
+row {
+    display: inline-block;
+}
+
+button {
+    height: 22px;
+    outline: none;
+    font-size: 0.9em;
+    padding: 2px 6px;
+    border: 1px solid #ccc;
+    border-radius: 2px;
+    margin: 2px 0;
+    background-color: #eee;
+}
+
+button:hover {
+    border: 1px solid #bbb;
+    background-color: #e7e7e7;
+}
+
+button:active {
+    border: 1px solid #bbb;
+    background-color: #ddd;
+}

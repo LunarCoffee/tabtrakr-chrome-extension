@@ -6,16 +6,25 @@ class TabInfo {
     }
 }
 
+async function getTabs() {
+    try {
+        return await chrome.tabs.query({ currentWindow: true });
+    } catch (e) {
+        return await new Promise(resolve => setTimeout(async () => resolve(await getTabs()), 50));
+    }
+}
+
+function getActiveTab(tabs) {
+    return tabs.filter(t => t.active)[0];
+}
+
 class TabInfoFrame {
     constructor(timeStart) {
         this.timeStart = timeStart;
     }
 
     async initTabs() {
-        let t = await getTabs();
-        console.error(t);
-
-        this.tabs = (t).map(t => new TabInfo(t.url, t.title, t.active));
+        this.tabs = (await getTabs()).map(t => new TabInfo(t.url, t.title, t.active));
         this.activeTab = getActiveTab(this.tabs);
     }
 }
@@ -24,7 +33,7 @@ class Timeline {
     async startNew() {
         let frame = new TabInfoFrame(new Date());
         await frame.initTabs();
-        frame.timeEnd = new Date();
+        frame.timeEnd = frame.timeStart;
         this.frames = [frame];
     }
 
@@ -34,21 +43,22 @@ class Timeline {
 
         let newFrame = new TabInfoFrame(time);
         await newFrame.initTabs();
-        newFrame.timeEnd = new Date();
+        newFrame.timeEnd = time;
         this.frames.push(newFrame);
     }
 }
 
-function getActiveTab(tabs) {
-    return tabs.filter(t => t.active)[0];
-}
-
-async function getTabs() {
-    try {
-        return await chrome.tabs.query({ currentWindow: true });
-    } catch (e) {
-        return await new Promise(resolve => setTimeout(async () => resolve(await getTabs()), 50));
+function withTimelineDatesAsJSON(func) {
+    for (let frame of timeline.frames) {
+        frame.timeStart = frame.timeStart.toJSON();
+        frame.timeEnd = frame.timeEnd.toJSON();
     }
+    let ret = func();
+    for (let frame of timeline.frames) {
+        frame.timeStart = new Date(frame.timeStart);
+        frame.timeEnd = new Date(frame.timeEnd);
+    }
+    return ret;
 }
 
 const reset = 'f'; // TODO:
@@ -61,34 +71,31 @@ function loadTimeline() {
                 frame.timeEnd = new Date(frame.timeEnd);
             }
             timeline = Object.assign(timeline, res.tl);
-            console.log("loaded from local storage");
+            console.log("loaded timeline from local storage");
         } else {
             await timeline.startNew();
-            console.log("no saved data, making new");
+            console.log("no saved timeline; creating new");
         }
     });
 }
 
 function storeTimeline() {
-    for (let frame of timeline.frames) {
-        frame.timeStart = frame.timeStart.toJSON();
-        frame.timeEnd = frame.timeEnd.toJSON();
-    }
-    chrome.storage.local.set({ tl: timeline });
-    for (let frame of timeline.frames) {
-        frame.timeStart = new Date(frame.timeStart);
-        frame.timeEnd = new Date(frame.timeEnd);
-    }
+    withTimelineDatesAsJSON(() => chrome.storage.local.set({ tl: timeline }));
 }
 
 let timeline = new Timeline();
 
 chrome.runtime.onInstalled.addListener(async () => {
-    console.log("Installed!");
     loadTimeline();
 });
 
 chrome.tabs.onActivated.addListener(async _ => {
     await timeline.addFrame();
     storeTimeline();
+    console.log("timeline saved");
+});
+
+chrome.runtime.onMessage.addListener((req, sender) => {
+    console.warn("current category updated")
+    console.warn(req.cat)
 });
