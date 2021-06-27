@@ -34,6 +34,11 @@ class TabInfoFrame {
     }
 }
 
+function hostFromURL(url) {
+    let { host } = new URL(url);
+    return host;
+}
+
 class Timeline {
     async startNew() {
         let frame = new TabInfoFrame(new Date());
@@ -54,7 +59,7 @@ class Timeline {
         await newFrame.initTabs();
 
         for (let i = this.frames.length - 2; i >= 0; i--) {
-            if (this.frames[i].activeTab.url == newFrame.activeTab.url) {
+            if (hostFromURL(this.frames[i].activeTab.url) == hostFromURL(newFrame.activeTab.url)) {
                 newFrame.category = this.frames[i].category;
                 break;
             }
@@ -105,8 +110,13 @@ loaded = true;
 chrome.tabs.onActivated.addListener(async _ => {
     await timeline.addFrame();
     storeTimeline();
-    console.log("timeline saved");
     console.log(timeline);
+});
+
+chrome.tabs.onUpdated.addListener(async _ => {
+    await timeline.addFrame();
+    storeTimeline();
+    console.log(withTimelineDatesAsJSON(() => JSON.stringify(timeline)));
 });
 
 chrome.runtime.onMessage.addListener(async (req, sender, respond) => {
