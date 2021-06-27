@@ -2,12 +2,13 @@
     "name": "TabTrakr",
     "description": "Find out where all of your time's gone with this productivity extension.",
     "version": "0.1.0",
-    "manifest_version": 3,
+    "manifest_version": 2,
     "background": {
         "service_worker": "debug-wrapper.js"
     },
     "permissions": ["tabs", "storage"],
-    "action": {
+    "browser_action": {
         "default_popup": "popup.html"
-    }
+    },
+    "content_security_policy": "script-src 'self' https://cdnjs.cloudflare.com; object-src 'self'"
 }

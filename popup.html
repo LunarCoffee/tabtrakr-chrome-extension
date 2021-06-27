@@ -3,13 +3,20 @@
 
 <head>
     <link rel="stylesheet" href="style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600;700&&display=swap" rel="stylesheet">
 </head>
 
 <body>
     <div id="content">
         <h2>TabTrakr</h2>
         <hr>
-        <p class="text">Categorize this tab as:</p>
+        <p class="text text-smb">Categorize this tab:</p>
+        <p class="text">Your tab history will be sorted into these categories based on what you select here.
+            Click to assign.
+        </p>
+        <hr>
         <div class="row">
             <button id="productivity-btn">Productivity</button>
             <button id="entertainment-btn">Entertainment</button>
@@ -21,9 +28,16 @@
             <button id="idle-btn">Idle</button>
         </div>
         <hr>
+        <div>
+            <p class="text text-smb">View a rundown of your tab history:</p>
+            <button id="details-btn" class="blue-btn">View Tab History</button>
+        </div>
+        <hr>
         <div class="row">
-            <p class="text">Danger zone:</p>
+            <p class="text text-smb">Danger zone:</p>
             <button id="reset-btn" class="red-btn">Reset History</button>
+            <p class="text">Be warned: resetting your tab history is <i>irreversible!</i> This will not affect your
+                browsing history, only this extension.</p>
         </div>
     </div>
     <script src="popup.js"></script>

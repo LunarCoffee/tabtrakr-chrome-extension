@@ -7,11 +7,15 @@ class TabInfo {
 }
 
 async function getTabs() {
-    try {
-        return await chrome.tabs.query({ currentWindow: true });
-    } catch (e) {
-        return await new Promise(resolve => setTimeout(async () => resolve(await getTabs()), 50));
-    }
+    return await new Promise(resolve => {
+        chrome.tabs.query({ currentWindow: true }, tabs => {
+            if (tabs == undefined) {
+                setTimeout(async () => resolve(await getTabs()), 50);
+            } else {
+                resolve(tabs);
+            }
+        });
+    });
 }
 
 function getActiveTab(tabs) {
@@ -109,14 +113,15 @@ chrome.runtime.onMessage.addListener(async (req, sender, respond) => {
     if (req.log != undefined) {
         console.log(req.log);
     } else if (req.getCategory != undefined) {
-        while (!loaded) {
-            setTimeout(() => { }, 10);
-        }
+        while (!loaded);
+        console.log(timeline);
         respond(timeline.frames[timeline.frames.length - 1].category);
     } else if (req.reset != undefined) {
         timeline = new Timeline();
         await timeline.startNew();
         storeTimeline();
+    } else if (req.getTimeline != undefined) {
+        respond(withTimelineDatesAsJSON(() => JSON.stringify(timeline)));
     } else {
         timeline.updateCategory(req.cat);
         storeTimeline();

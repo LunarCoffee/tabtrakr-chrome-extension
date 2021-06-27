@@ -1,19 +1,29 @@
-html {
-    font-family: "FreeSans", sans-serif;
+* {
+    user-select: none;
+}
+
+body {
+    padding: 0;
+    margin: 12px;
+    font-family: "Open Sans", sans-serif;
 }
 
 #content {
-    width: 210px;
+    width: 215px;
 }
 
 h2 {
-    margin: 10px 0 2px 0;
+    margin: 12px 0 2px 0;
     line-height: 1em;
     font-size: 1.3em;
 }
 
 .text {
     margin: 3px 0;
+}
+
+.text-smb {
+    font-weight: 600;
 }
 
 row {
@@ -29,6 +39,8 @@ button {
     border-radius: 2px;
     margin: 2px 0;
     background-color: #eee;
+    font-family: "Open Sans", sans-serif;
+
 }
 
 button:hover {
@@ -58,4 +70,19 @@ hr {
 .red-btn:active {
     border: 1px solid #d85b5b;
     background-color: #ff8c8c;
+}
+
+.blue-btn {
+    border: 1px solid #70b9e4;
+    background-color: #a9dbf8;
+}
+
+.blue-btn:hover {
+    border: 1px solid #5daad6;
+    background-color: #95d1f3;
+}
+
+.blue-btn:active {
+    border: 1px solid #4b9cca;
+    background-color: #7cc4ee;
 }

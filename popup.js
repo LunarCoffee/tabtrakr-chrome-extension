@@ -6,6 +6,7 @@ let eduBtn = document.getElementById("education-btn")
 let idleBtn = document.getElementById("idle-btn")
 
 let resetBtn = document.getElementById("reset-btn")
+let detailsBtn = document.getElementById("details-btn")
 
 prodBtn.onclick = a => setCategory(a, "productivity");
 entBtn.onclick = a => setCategory(a, "entertainment");
@@ -20,6 +21,8 @@ resetBtn.onclick = a => {
         setTimeout(() => window.close(), 150);
     }
 };
+
+detailsBtn.onclick = a => chrome.tabs.create({ url: "history.html" });
 
 let buttons = [prodBtn, entBtn, socBtn, shopBtn, eduBtn, idleBtn];
 
