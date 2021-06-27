@@ -48,6 +48,13 @@ class Timeline {
 
         let newFrame = new TabInfoFrame(time);
         await newFrame.initTabs();
+
+        for (let i = this.frames.length - 2; i >= 0; i--) {
+            if (this.frames[i].activeTab.url == newFrame.activeTab.url) {
+                newFrame.category = this.frames[i].category;
+                break;
+            }
+        }
         newFrame.timeEnd = time;
         this.frames.push(newFrame);
     }
@@ -66,11 +73,9 @@ function withTimelineDatesAsJSON(func) {
     return ret;
 }
 
-const reset = 'f'; // TODO:
-
 function loadTimeline() {
     chrome.storage.local.get(["tl"], async res => {
-        if (res.tl !== undefined && !(reset == 't')) { // TODO:
+        if (res.tl !== undefined) {
             for (let frame of res.tl.frames) {
                 frame.timeStart = new Date(frame.timeStart);
                 frame.timeEnd = new Date(frame.timeEnd);
@@ -100,7 +105,7 @@ chrome.tabs.onActivated.addListener(async _ => {
     console.log(timeline);
 });
 
-chrome.runtime.onMessage.addListener((req, sender, respond) => {
+chrome.runtime.onMessage.addListener(async (req, sender, respond) => {
     if (req.log != undefined) {
         console.log(req.log);
     } else if (req.getCategory != undefined) {
@@ -108,6 +113,10 @@ chrome.runtime.onMessage.addListener((req, sender, respond) => {
             setTimeout(() => { }, 10);
         }
         respond(timeline.frames[timeline.frames.length - 1].category);
+    } else if (req.reset != undefined) {
+        timeline = new Timeline();
+        await timeline.startNew();
+        storeTimeline();
     } else {
         timeline.updateCategory(req.cat);
         storeTimeline();

@@ -5,12 +5,21 @@ let shopBtn = document.getElementById("shopping-btn")
 let eduBtn = document.getElementById("education-btn")
 let idleBtn = document.getElementById("idle-btn")
 
+let resetBtn = document.getElementById("reset-btn")
+
 prodBtn.onclick = a => setCategory(a, "productivity");
 entBtn.onclick = a => setCategory(a, "entertainment");
 socBtn.onclick = a => setCategory(a, "social");
 shopBtn.onclick = a => setCategory(a, "shopping");
 eduBtn.onclick = a => setCategory(a, "education");
 idleBtn.onclick = a => setCategory(a, "idle");
+
+resetBtn.onclick = a => {
+    if (window.confirm("WARNING: This action is irreversible!\nDo you really want to reset your tab history?")) {
+        chrome.runtime.sendMessage({ reset: 1 });
+        setTimeout(() => window.close(), 150);
+    }
+};
 
 let buttons = [prodBtn, entBtn, socBtn, shopBtn, eduBtn, idleBtn];
 

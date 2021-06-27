@@ -7,13 +7,13 @@ html {
 }
 
 h2 {
-    margin: 9px 0 10px 0;
+    margin: 10px 0 2px 0;
     line-height: 1em;
     font-size: 1.3em;
 }
 
 .text {
-    margin: -4px 0 4px 0;
+    margin: 3px 0;
 }
 
 row {
@@ -39,4 +39,23 @@ button:hover {
 button:active {
     border: 1px solid #bbb;
     background-color: #ddd;
+}
+
+hr {
+    border: 1px solid #ddd;
+}
+
+.red-btn {
+    border: 1px solid #d46b6b;
+    background-color: #f8a9a9;
+}
+
+.red-btn:hover {
+    border: 1px solid #d86464;
+    background-color: #f89e9e;
+}
+
+.red-btn:active {
+    border: 1px solid #d85b5b;
+    background-color: #ff8c8c;
 }
